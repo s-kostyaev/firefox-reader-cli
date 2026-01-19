@@ -1,0 +1,29 @@
+{
+  "name": "firefox-reader-cli",
+  "version": "1.0.0",
+  "description": "Standalone CLI for Firefox Reader Mode - extract and save articles as clean, readable HTML",
+  "main": "bin/reader.js",
+  "bin": {
+    "reader-cli": "./bin/reader.js"
+  },
+  "scripts": {
+    "test": "node bin/reader.js --help"
+  },
+  "keywords": [
+    "reader",
+    "readability",
+    "article",
+    "cli",
+    "firefox"
+  ],
+  "author": "Mozilla",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "jsdom": "^25.0.1",
+    "commander": "^12.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
