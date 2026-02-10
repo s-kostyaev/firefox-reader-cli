@@ -44,6 +44,16 @@ This will create a file named after the article title (e.g., `how-to-build-cli-t
 ./bin/reader.js https://example.com/article -o my-article.html
 ```
 
+### Output to stdout
+
+```bash
+./bin/reader.js https://example.com/article -i > article.html
+```
+
+Notes:
+- `-i`/`--stdout` supports only a single URL
+- `-i`/`--stdout` cannot be combined with `-o`/`--output`
+
 ### Choose a Theme
 
 ```bash

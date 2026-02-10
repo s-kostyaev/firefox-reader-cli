@@ -16,6 +16,7 @@ program
   .version(packageJson.version)
   .argument('<urls...>', 'One or more URLs to process')
   .option('-o, --output <file>', 'Output filename (only for single URL)')
+  .option('-i, --stdout', 'Write HTML to stdout instead of a file')
   .option('-t, --theme <theme>', 'Theme: light, dark, sepia, gray, contrast', 'light')
   .option('-v, --verbose', 'Verbose output')
   .option('--debug', 'Debug output with detailed information')
@@ -25,11 +26,24 @@ program
     } else if (options.verbose) {
       logger.setVerbose(true);
     }
+    if (options.stdout) {
+      logger.setStderrOutput(true);
+    }
 
     const validThemes = ['light', 'dark', 'sepia', 'gray', 'contrast'];
     if (!validThemes.includes(options.theme)) {
       logger.error(`Invalid theme: ${options.theme}`);
       logger.info(`Valid themes: ${validThemes.join(', ')}`);
+      process.exit(1);
+    }
+
+    if (options.stdout && options.output) {
+      logger.error('Options --stdout and --output cannot be used together');
+      process.exit(1);
+    }
+
+    if (options.stdout && urls.length > 1) {
+      logger.error('--stdout supports only a single URL');
       process.exit(1);
     }
 
@@ -56,14 +70,19 @@ program
 
         const html = generateHTML(article, options.theme);
 
-        const filename = generateFilename(
-          article,
-          urls.length === 1 ? options.output : null
-        );
+        if (options.stdout) {
+          process.stdout.write(html);
+          logger.success(`${urlNum}Output sent to stdout`);
+        } else {
+          const filename = generateFilename(
+            article,
+            urls.length === 1 ? options.output : null
+          );
 
-        fs.writeFileSync(filename, html, 'utf8');
+          fs.writeFileSync(filename, html, 'utf8');
 
-        logger.success(`${urlNum}Saved: ${filename}`);
+          logger.success(`${urlNum}Saved: ${filename}`);
+        }
         logger.verbose(`  Title: ${article.title}`);
         logger.verbose(`  Reading time: ${article.readingTime}`);
 
